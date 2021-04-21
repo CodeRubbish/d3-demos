@@ -13,7 +13,7 @@ const generateData = (length, maxNum) => {
 const w = 600;
 const h = 300;
 const padding = 20;
-const dataSet = generateData(20, 25);
+let dataSet = generateData(20, 25);
 const colors = d3.scaleOrdinal(d3.schemeCategory10);
 export default class BarChart extends PureComponent {
     constructor(props) {
@@ -72,12 +72,46 @@ export default class BarChart extends PureComponent {
 
     }
 
+    sortBy = (compareMethod) => {
+        const xScale = d3.scaleBand()
+            .domain(d3.range(dataSet.length))
+            .range([padding, w - 2 * padding])
+            .round(true)
+            .paddingInner(0.05);
+        const yScale = d3.scaleLinear()
+            .domain([0, d3.max(dataSet)])
+            .range([h - 2 * padding, padding]);
+        dataSet = dataSet.sort(compareMethod);
+        const bars = d3.select(this.myRef.current).select('g.bars');
+        bars.selectAll('rect')
+            .data(dataSet)
+            .transition()
+            .duration(1000)
+            .attr('x', (d, i) => xScale(i))
+            .attr('fill', (d, i) => colors(i.toString()))
+            .attr('y', d => yScale(d))
+            .attr('width', xScale.bandwidth())
+            .attr('height', d => h - 2 * padding - yScale(d))
+        bars.selectAll('text')
+            .data(dataSet)
+            .text(d => d)
+            // 加上条形宽度的一半
+            .transition()
+            .duration(1000)
+            .attr('x', (d, i) => xScale(i) + xScale.bandwidth() / 2)
+            .attr('y', d => {
+                if (d > 1) return yScale(d) + 12;
+                return yScale(d) - 2;
+            })
+            .attr('fill', d => d > 1 ? 'white' : 'black')
+    }
+
     render() {
         return <div className={css.block}>
             <div ref={this.myRef}/>
             <Button.Group>
-                <Button type={'primary'} shape="round">顺序排列</Button>
-                <Button type={'primary'} shape="round">逆序排列</Button>
+                <Button type={'primary'} shape="round" onClick={this.sortBy.bind(this, d3.descending)}>顺序排列</Button>
+                <Button type={'primary'} shape="round" onClick={this.sortBy.bind(this, d3.ascending)}>逆序排列</Button>
                 <Button type={'primary'} shape="round">随机增加一条</Button>
                 <Button type={'primary'} shape="round">随机移除一条</Button>
             </Button.Group>

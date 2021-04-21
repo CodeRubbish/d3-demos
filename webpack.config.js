@@ -7,7 +7,7 @@ module.exports = {
     mode: "development",
     devtool: "eval-cheap-module-source-map",
     devServer: {
-        port: 3000,
+        port: 3001,
         contentBase: path.join(__dirname, 'dist'),
         open: 'Google Chrome',
         hot: true, //热更新
