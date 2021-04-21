@@ -9,6 +9,8 @@ module.exports = {
         port: 3000,
         contentBase: path.join(__dirname, 'dist'),
         open: 'Google Chrome',
+        hot: true, //热更新
+        hotOnly: false
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
