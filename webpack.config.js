@@ -22,8 +22,30 @@ module.exports = {
             {
                 test: /\.jsx$/,
                 use: 'babel-loader'
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    'style-loader',
+                    'css-loader'
+                ]
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    'style-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            importLoaders: 1,
+                        }
+                    },
+                    {
+                        loader: 'sass-loader'
+                    }
+                ]
             }
-        ]
+        ],
     },
     plugins: [
         new HtmlWebpackPlugin({

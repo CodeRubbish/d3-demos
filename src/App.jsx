@@ -2,6 +2,6 @@ import React, {PureComponent} from "react";
 
 export default class App extends PureComponent {
     render() {
-        return <div>this is app</div>
+        return <div className={'grid'}>this is app</div>
     }
 }
