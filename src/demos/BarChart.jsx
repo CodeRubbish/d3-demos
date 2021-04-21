@@ -6,7 +6,10 @@ import {Button} from "antd";
 const generateData = (length, maxNum) => {
     const newSet = [];
     for (let i = 0; i < length; i++) {
-        newSet.push(Math.floor(Math.random() * (maxNum - 1)) + 1)
+        newSet.push({
+            key: i,
+            value: Math.floor(Math.random() * (maxNum - 1)) + 1
+        })
     }
     return newSet;
 };
@@ -15,6 +18,16 @@ const h = 300;
 const padding = 20;
 let dataSet = generateData(20, 25);
 const colors = d3.scaleOrdinal(d3.schemeCategory10);
+const xScale = d3.scaleBand()
+    .domain(d3.range(dataSet.length))
+    .range([padding, w - 2 * padding])
+    .round(true)
+    .paddingInner(0.05);
+const yScale = d3.scaleLinear()
+    .domain([0, d3.max(dataSet, d => d.value)])
+    .range([h - 2 * padding, padding]);
+let xAxis = d3.axisBottom(xScale);
+let yAxis = d3.axisLeft(yScale);
 export default class BarChart extends PureComponent {
     constructor(props) {
         super(props);
@@ -27,40 +40,30 @@ export default class BarChart extends PureComponent {
             .attr('width', w)
             .attr('height', h);
         const bars = svg.append('g').attr('class', 'bars');
-        const xScale = d3.scaleBand()
-            .domain(d3.range(dataSet.length))
-            .range([padding, w - 2 * padding])
-            .round(true)
-            .paddingInner(0.05);
-        const yScale = d3.scaleLinear()
-            .domain([0, d3.max(dataSet)])
-            .range([h - 2 * padding, padding]);
         bars.selectAll('rect')
-            .data(dataSet)
+            .data(dataSet, d => d.key)
             .enter()
             .append('rect')
             .attr('x', (d, i) => xScale(i))
-            .attr('fill', (d, i) => colors(i.toString()))
-            .attr('y', d => yScale(d))
+            .attr('fill', d => colors(d.value))
+            .attr('y', d => yScale(d.value))
             .attr('width', xScale.bandwidth())
-            .attr('height', d => h - 2 * padding - yScale(d))
+            .attr('height', d => h - 2 * padding - yScale(d.value))
         bars.selectAll('text')
             .data(dataSet)
             .enter()
             .append('text')
-            .text(d => d)
+            .text(d => d.value)
             // 加上条形宽度的一半
             .attr('x', (d, i) => xScale(i) + xScale.bandwidth() / 2)
             .attr('y', d => {
-                if (d > 1) return yScale(d) + 12;
-                return yScale(d) - 2;
+                if (d.value > 1) return yScale(d.value) + 12;
+                return yScale(d.value) - 2;
             })
             .attr('font-family', 'sans-serif')
             .attr('font-size', "11px")
-            .attr('fill', d => d > 1 ? 'white' : 'black')
+            .attr('fill', d => d.value > 1 ? 'white' : 'black')
             .attr('text-anchor', 'middle');
-        const xAxis = d3.axisBottom(xScale);
-        const yAxis = d3.axisLeft(yScale);
         svg.append('g')
             .attr('class', 'xAxis')
             .attr('transform', `translate(0,${h - 2 * padding})`)
@@ -72,38 +75,27 @@ export default class BarChart extends PureComponent {
 
     }
 
-    sortBy = (compareMethod) => {
-        const xScale = d3.scaleBand()
-            .domain(d3.range(dataSet.length))
-            .range([padding, w - 2 * padding])
-            .round(true)
-            .paddingInner(0.05);
-        const yScale = d3.scaleLinear()
-            .domain([0, d3.max(dataSet)])
-            .range([h - 2 * padding, padding]);
-        dataSet = dataSet.sort(compareMethod);
+    setRight = () => {
         const bars = d3.select(this.myRef.current).select('g.bars');
         bars.selectAll('rect')
-            .data(dataSet)
+            .data(dataSet, d => d.key)
             .transition()
             .duration(1000)
             .attr('x', (d, i) => xScale(i))
-            .attr('fill', (d, i) => colors(i.toString()))
-            .attr('y', d => yScale(d))
-            .attr('width', xScale.bandwidth())
-            .attr('height', d => h - 2 * padding - yScale(d))
         bars.selectAll('text')
-            .data(dataSet)
-            .text(d => d)
+            .data(dataSet, d => d.key)
             // 加上条形宽度的一半
             .transition()
             .duration(1000)
             .attr('x', (d, i) => xScale(i) + xScale.bandwidth() / 2)
-            .attr('y', d => {
-                if (d > 1) return yScale(d) + 12;
-                return yScale(d) - 2;
-            })
-            .attr('fill', d => d > 1 ? 'white' : 'black')
+    }
+    sortBy = (compareMethod) => {
+        dataSet = dataSet.sort((a, b) => compareMethod(a.value, b.value));
+        this.setRight();
+    }
+    shuffle = () => {
+        dataSet = d3.shuffle(dataSet);
+        this.setRight();
     }
 
     render() {
@@ -111,10 +103,10 @@ export default class BarChart extends PureComponent {
             <span className={css.title}>条形图</span>
             <div ref={this.myRef}/>
             <Button.Group>
-                <Button type={'primary'} shape="round" onClick={this.sortBy.bind(this, d3.descending)}>顺序排列</Button>
-                <Button type={'primary'} shape="round" onClick={this.sortBy.bind(this, d3.ascending)}>逆序排列</Button>
-                <Button type={'primary'} shape="round">随机增加一条</Button>
-                <Button type={'primary'} shape="round">随机移除一条</Button>
+                <Button type={'primary'} onClick={this.sortBy.bind(this, d3.descending)}>顺序排列</Button>
+                <Button type={'primary'} onClick={this.sortBy.bind(this, d3.ascending)}>逆序排列</Button>
+                <Button type={'primary'} onClick={this.shuffle}>随机打乱</Button>
+                <Button type={'primary'}>随机移除一条</Button>
             </Button.Group>
         </div>
     }
