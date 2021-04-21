@@ -1,7 +1,8 @@
 import React, {PureComponent} from "react";
-import sc from './App.module.scss';
+import {Button} from "antd";
+
 export default class App extends PureComponent {
     render() {
-        return <div className={sc.grid}>this is app</div>
+        return <Button type={'primary'}>点击我</Button>
     }
 }
