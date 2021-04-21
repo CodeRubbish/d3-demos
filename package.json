@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack serve"
+    "start": "webpack serve",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
     "webpack-dev-server": "^3.11.2",
     "html-webpack-plugin": "^5.3.1",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
+    "copy-webpack-plugin": "^8.1.1",
     "babel-loader": "^8.2.2",
     "@babel/core": "^7.13.16",
     "@babel/preset-react": "^7.13.13",
