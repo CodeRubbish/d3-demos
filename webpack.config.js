@@ -31,20 +31,24 @@ module.exports = {
                 ]
             },
             {
-                test: /\.scss$/,
+                test: /.scss$/,
                 use: [
                     'style-loader',
                     {
                         loader: 'css-loader',
                         options: {
                             importLoaders: 1,
+                            modules:{
+                                auto:/\.module\.\w+$/i,
+                                localIdentName: "[local]_[hash:base64:12]",
+                            },
                         }
                     },
                     {
-                        loader: 'sass-loader'
+                        loader: 'sass-loader',
                     }
                 ]
-            }
+            },
         ],
     },
     plugins: [
