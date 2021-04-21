@@ -17,6 +17,9 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: "[name].bundle.js"
     },
+    resolve: {
+        extensions: ['.js', '.jsx', '.json', '.wasm'],
+    },
     module: {
         rules: [
             {
@@ -38,8 +41,8 @@ module.exports = {
                         loader: 'css-loader',
                         options: {
                             importLoaders: 1,
-                            modules:{
-                                auto:/\.module\.\w+$/i,
+                            modules: {
+                                auto: /\.module\.\w+$/i,
                                 localIdentName: "[local]_[hash:base64:12]",
                             },
                         }
