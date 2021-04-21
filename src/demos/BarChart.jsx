@@ -108,6 +108,7 @@ export default class BarChart extends PureComponent {
 
     render() {
         return <div className={css.block}>
+            <span className={css.title}>条形图</span>
             <div ref={this.myRef}/>
             <Button.Group>
                 <Button type={'primary'} shape="round" onClick={this.sortBy.bind(this, d3.descending)}>顺序排列</Button>
