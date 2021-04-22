@@ -16,7 +16,8 @@ const generateData = (length, maxNum) => {
 const w = 600;
 const h = 300;
 const padding = 20;
-let dataSet = generateData(20, 25);
+const maxNum = 25;
+let dataSet = generateData(20, maxNum);
 let colors = d3.scaleOrdinal(d3.schemeCategory10);
 let xScale = d3.scaleBand()
     .domain(d3.range(dataSet.length))
@@ -135,7 +136,7 @@ export default class BarChart extends PureComponent {
             .attr('x', (d, i) => xScale(i) + xScale.bandwidth() / 2)
     }
     reGenerate = () => {
-        dataSet = generateData(20, 25);
+        dataSet = generateData(20, maxNum);
         yScale = d3.scaleLinear()
             .domain([0, d3.max(dataSet, d => d.value)])
             .range([h - 2 * padding, padding]);
@@ -154,8 +155,8 @@ export default class BarChart extends PureComponent {
             <span className={css.title}>条形图</span>
             <div ref={this.myRef}/>
             <Button.Group>
-                <Button type={'primary'} onClick={this.sortBy.bind(this, d3.descending)}>顺序排列</Button>
-                <Button type={'primary'} onClick={this.sortBy.bind(this, d3.ascending)}>逆序排列</Button>
+                <Button type={'primary'} onClick={this.sortBy.bind(this, d3.ascending)}>顺序排列</Button>
+                <Button type={'primary'} onClick={this.sortBy.bind(this, d3.descending)}>逆序排列</Button>
                 <Button type={'primary'} onClick={this.shuffle}>随机打乱</Button>
                 <Button type={'primary'} onClick={this.reGenerate}>重新生成数据</Button>
             </Button.Group>
