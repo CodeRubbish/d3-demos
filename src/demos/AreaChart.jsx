@@ -1,7 +1,7 @@
 import React, {PureComponent} from "react";
 import * as d3 from 'd3';
 import css from '../App.module.scss';
-import lineCss from './line.module.scss';
+import areaCss from './area.module.scss';
 import co2File from './mauna_loa_co2_monthly_averages.csv';
 
 const w = 500;
@@ -14,9 +14,9 @@ const rowConverter = function (d) {
         average: parseFloat(d.average)  //Convert from string to float
     };
 }
-let dataset, xScale, yScale, xAxis, yAxis, line, dangerLine;
-
-export default class PerfectLineChart extends PureComponent {
+// let dataset, xScale, yScale, xAxis, yAxis, line, dangerLine;
+let dataset, xScale, yScale, xAxis, yAxis, area, dangerArea;
+export default class AreaChart extends PureComponent {
     constructor(props) {
         super(props);
         this.myRef = React.createRef();
@@ -34,6 +34,7 @@ export default class PerfectLineChart extends PureComponent {
         // 初始化图表
         const {svg} = this;
         dataset = await d3.csv(co2File, rowConverter);
+        //Create scale functions
         xScale = d3.scaleTime()
             .domain([
                 d3.min(dataset, function (d) {
@@ -55,21 +56,7 @@ export default class PerfectLineChart extends PureComponent {
                 })
             ])
             .range([h - padding, 0]);
-        svg.append('clipPath')
-            .attr('id', 'line-chart-area-top')
-            .append("rect")
-            .attr('x', padding)
-            .attr('y', 0)
-            .attr('width', w - padding * 2)
-            .attr('height', yScale(350));
-        svg.append('clipPath')
-            .attr('id', 'line-chart-area-bottom')
-            .append("rect")
-            .attr('x', padding)
-            .attr('y', yScale(350))
-            .attr('width', w - padding * 2)
-            .attr('height', h - yScale(350)-padding)
-        //Define axes
+//Define axes
         xAxis = d3.axisBottom()
             .scale(xScale)
             .ticks(10)
@@ -80,42 +67,63 @@ export default class PerfectLineChart extends PureComponent {
             .scale(yScale)
             .ticks(10);
 
-        //Define line generators
-        line = d3.line()
+        //Define area generators
+        area = d3.area()
             .defined(function (d) {
                 return d.average >= 0;
             })
             .x(function (d) {
                 return xScale(d.date);
             })
-            .y(function (d) {
+            .y0(function () {
+                return yScale.range()[0];
+            })
+            .y1(function (d) {
                 return yScale(d.average);
             });
 
-        dangerLine = d3.line()
+        dangerArea = d3.area()
             .defined(function (d) {
-                return d.average >= 0;
+                return d.average >= 350;
             })
             .x(function (d) {
                 return xScale(d.date);
             })
-            .y(function (d) {
+            .y0(function () {
+                return yScale(350);
+            })
+            .y1(function (d) {
                 return yScale(d.average);
             });
-
-        //Create lines
-        svg.append("path")
+        //Create areas
+        svg.append('g')
+            .attr('clip-path', "url(#area-chart-area-bottom")
+            .append("path")
             .datum(dataset)
-            .attr("class", lineCss.line)
-            .attr('clip-path', "url(#line-chart-area-bottom)")
-            .attr("d", line);
+            .attr("class", `${areaCss.area}`)
+            .attr("d", area);
 
-        svg.append("path")
+        svg.append('g')
+            .attr('clip-path', "url(#area-chart-area-top)")
+            .append("path")
             .datum(dataset)
-            .attr("class", `${lineCss.line} ${lineCss.danger}`)
-            .attr('clip-path', "url(#line-chart-area-top)")
-            .attr("d", dangerLine);
+            .attr("class", `${areaCss.area} ${areaCss.danger}`)
+            .attr("d", dangerArea);
 
+        svg.append('clipPath')
+            .attr('id', 'area-chart-area-top')
+            .append("rect")
+            .attr('x', padding)
+            .attr('y', 0)
+            .attr('width', w - padding * 2)
+            .attr('height', yScale(350)-0.5);
+        svg.append('clipPath')
+            .attr('id', 'area-chart-area-bottom')
+            .append("rect")
+            .attr('x', padding)
+            .attr('y', yScale(350)+0.5)
+            .attr('width', w - padding * 2)
+            .attr('height', h - yScale(350) - padding)
         //Create axes
         svg.append("g")
             .attr("class", "axis")
@@ -126,10 +134,9 @@ export default class PerfectLineChart extends PureComponent {
             .attr("class", "axis")
             .attr("transform", "translate(" + padding + ",0)")
             .call(yAxis);
-
         //Draw 350 ppm line
         svg.append("line")
-            .attr("class", `${lineCss.line} ${lineCss.safeLevel}`)
+            .attr("class", `${areaCss.area} ${areaCss.safeLevel}`)
             .attr("x1", padding)
             .attr("x2", w)
             .attr("y1", yScale(350))
@@ -137,15 +144,17 @@ export default class PerfectLineChart extends PureComponent {
 
         //Label 350 ppm line
         svg.append("text")
-            .attr("class", lineCss.dangerLabel)
+            .attr("class", `${areaCss.dangerLabel}`)
             .attr("x", padding + 20)
             .attr("y", yScale(350) - 7)
             .text("350 ppm “safe” level");
+
+
     }
 
     render() {
         return <div className={css.block}>
-            <span className={css.title}>完美折线图</span>
+            <span className={css.title}>区域图</span>
             <div ref={this.myRef}/>
         </div>
     }

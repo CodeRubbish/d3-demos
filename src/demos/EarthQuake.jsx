@@ -44,6 +44,7 @@ export default class EarthQuake extends PureComponent {
         this.myRef.current.append(canvas);
         this.draw = this.draw.bind(null, projection, c, world, quakes, quakeRadius);
         this.draw([0, 0]);
+        this.play();
     }
 
     draw(projection, c, world, quakes, quakeRadius, rotate) {
@@ -83,8 +84,10 @@ export default class EarthQuake extends PureComponent {
         return [quake, world];
     }
     play = () => {
-        this.running = true;
-        this.step();
+        if (!this.running) {
+            this.running = true;
+            this.step();
+        }
     }
 
     step = () => {
@@ -94,7 +97,9 @@ export default class EarthQuake extends PureComponent {
         }
     }
     pause = () => {
-        this.running = false;
+        if (this.running) {
+            this.running = false;
+        }
     }
 
     render() {
