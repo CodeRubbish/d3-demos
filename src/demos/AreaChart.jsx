@@ -56,7 +56,7 @@ export default class AreaChart extends PureComponent {
                 })
             ])
             .range([h - padding, 0]);
-//Define axes
+        //Define axes
         xAxis = d3.axisBottom()
             .scale(xScale)
             .ticks(10)
@@ -116,12 +116,12 @@ export default class AreaChart extends PureComponent {
             .attr('x', padding)
             .attr('y', 0)
             .attr('width', w - padding * 2)
-            .attr('height', yScale(350)-0.5);
+            .attr('height', yScale(350) - 0.5);
         svg.append('clipPath')
             .attr('id', 'area-chart-area-bottom')
             .append("rect")
             .attr('x', padding)
-            .attr('y', yScale(350)+0.5)
+            .attr('y', yScale(350) + 0.5)
             .attr('width', w - padding * 2)
             .attr('height', h - yScale(350) - padding)
         //Create axes
