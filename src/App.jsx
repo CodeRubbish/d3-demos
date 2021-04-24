@@ -6,6 +6,7 @@ import ScatterDiagram from "./demos/ScatterDiagram";
 import LineChart from "./demos/LineChart";
 import PerfectLineChart from "./demos/PerfectLineChart";
 import AreaChart from "./demos/AreaChart";
+import ForceDirected from "./demos/ForceDirected";
 
 export default class App extends PureComponent {
     render() {
@@ -16,6 +17,7 @@ export default class App extends PureComponent {
             <LineChart/>
             <PerfectLineChart/>
             <AreaChart/>
+            <ForceDirected/>
         </div>
     }
 
