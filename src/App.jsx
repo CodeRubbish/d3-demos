@@ -6,6 +6,8 @@ import Example from "./demos/Example";
 import EarthQuake from "./demos/EarthQuake";
 import ScatterDiagram from "./demos/ScatterDiagram";
 import LineChart from "./demos/LineChart";
+import PerfectLineChart from "./demos/PerfectLineChart";
+
 const arr = d3.schemeCategory10;
 export default class App extends PureComponent {
     render() {
@@ -14,6 +16,7 @@ export default class App extends PureComponent {
             <EarthQuake/>
             <ScatterDiagram/>
             <LineChart/>
+            <PerfectLineChart/>
             {arr.map((d, i) => <Example key={i}/>)}
         </div>
     }
