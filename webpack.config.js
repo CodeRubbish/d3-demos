@@ -52,6 +52,10 @@ module.exports = {
                     }
                 ]
             },
+            {
+                test: /\.csv$/,
+                use: 'file-loader'
+            }
         ],
     },
     plugins: [
