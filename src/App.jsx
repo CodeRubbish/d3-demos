@@ -7,6 +7,8 @@ import LineChart from "./demos/LineChart";
 import PerfectLineChart from "./demos/PerfectLineChart";
 import AreaChart from "./demos/AreaChart";
 import ForceDirected from "./demos/ForceDirected";
+import PieChart from "./demos/PieChart";
+import DonutChart from "./demos/DonutChart";
 
 export default class App extends PureComponent {
     render() {
@@ -18,6 +20,8 @@ export default class App extends PureComponent {
             <PerfectLineChart/>
             <AreaChart/>
             <ForceDirected/>
+            <PieChart/>
+            <DonutChart/>
         </div>
     }
 
