@@ -9,6 +9,8 @@ import AreaChart from "./demos/AreaChart";
 import ForceDirected from "./demos/ForceDirected";
 import PieChart from "./demos/PieChart";
 import DonutChart from "./demos/DonutChart";
+import StackBar from "./demos/StackBar";
+import StackArea from "./demos/StackArea";
 
 export default class App extends PureComponent {
     render() {
@@ -22,6 +24,8 @@ export default class App extends PureComponent {
             <ForceDirected/>
             <PieChart/>
             <DonutChart/>
+            <StackBar/>
+            <StackArea/>
         </div>
     }
 
