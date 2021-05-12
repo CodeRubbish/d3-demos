@@ -97,13 +97,9 @@ export default class StackArea extends PureComponent {
             .append("path")
             .attr("class", stackCSS.area)
             .attr("d", area)
-            .attr("fill", function (d, i) {
-                return d3.schemeCategory10[i];
-            })
+            .attr("fill", (d, i) => d3.schemeCategory10[i])
             .append("title")  //Make tooltip
-            .text(function (d) {
-                return d.key;
-            });
+            .text(d => d.key);
 
         //Create axes
         svg.append("g")
