@@ -42,8 +42,8 @@
     "file-loader": "^6.2.0",
     "css-loader": "^5.2.4",
     "style-loader": "^2.0.0",
-    "sass-loader": "^11.0.1",
-    "node-sass": "^5.0.0",
+    "less-loader": "^8.1.1",
+    "less": "^4.1.1",
     "babel-plugin-import": "^1.13.3",
     "@types/d3": "^6.3.0",
     "@babel/plugin-proposal-class-properties": "^7.13.0"
